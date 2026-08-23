@@ -257,16 +257,28 @@
             }
         }
 
-        // Decodificador seguro de tokens JWT
-        function parseJwt(token) {
-            var base64Url = token.split('.');
-            var base64 = base64Url.replaceAll('-', '+').replaceAll('_', '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-
-            return JSON.parse(jsonPayload);
+// Reemplaza tu función parseJwt antigua por esta versión blindada para producción:
+function parseJwt(token) {
+    try {
+        var base64Url = token.split('.')[1]; // Extraemos estrictamente el bloque de datos (payload)
+        var base64 = base64Url.replaceAll('-', '+').replaceAll('_', '/');
+        
+        // CORRECCIÓN 1: Reparar automáticamente el relleno (padding) faltante del Base64
+        while (base64.length % 4) {
+            base64 += '=';
         }
+        
+        // CORRECCIÓN 2: Soporte nativo y robusto para nombres con acentos, tildes o caracteres especiales (UTF-8)
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (err) {
+        console.error("Fallo interno al descifrar el token JWT:", err);
+        throw new Error("El token de Google tiene un formato incompatible con la decodificación básica.");
+    }
+}
 
         // Se ejecuta tras elegir la cuenta de Google con éxito
         function handleCredentialResponse(response) {

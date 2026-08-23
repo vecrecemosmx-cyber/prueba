@@ -3,84 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Real con Google</title>
+    <title>Práctica de Fonética Inglesa</title>
+    <!-- Tus estilos originales -->
+    <link rel="stylesheet" href="style.css">
     
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://google.com" async defer></script>
+    
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* ==========================================================================
+           ESTILOS PARA LA PANTALLA DE INICIO DE SESIÓN CON GOOGLE
+           ========================================================================== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
             height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
+            z-index: 99999; /* Asegura estar por encima de todo al cargar */
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .card {
+        .login-card {
             background: white;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
             text-align: center;
-            width: 100%;
+            width: 90%;
             max-width: 400px;
         }
 
-        h1 {
+        .login-card h1 {
             color: #333;
             margin-bottom: 10px;
-            font-size: 24px;
+            font-size: 26px;
+            font-weight: bold;
+            border: none; /* Evita heredar estilos del header original */
+            padding: 0;
         }
 
-        p {
+        .login-card p {
             color: #666;
             margin-bottom: 30px;
             font-size: 14px;
-        }
-
-        #login-screen { display: block; }
-        #content-screen { display: none; }
-
-        .profile-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-            border: 3px solid #764ba2;
-        }
-
-        .user-name {
-            font-size: 20px;
-            font-weight: bold;
-            color: #222;
-        }
-
-        .user-email {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 25px;
-        }
-
-        .logout-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            width: 100%;
-        }
-
-        .logout-btn:hover {
-            background-color: #bd2130;
+            line-height: 1.5;
         }
 
         .google-btn-container {
@@ -89,52 +60,184 @@
             margin-top: 10px;
             min-height: 44px;
         }
+
+        /* ==========================================================================
+           BARRA DE USUARIO AUTENTICADO (INTEGRADA EN TU PLATAFORMA)
+           ========================================================================== */
+        .user-auth-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .user-profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #764ba2;
+        }
+
+        .user-details {
+            text-align: left;
+        }
+
+        .user-display-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .user-display-email {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .btn-google-logout {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .btn-google-logout:hover {
+            background-color: #bd2130;
+        }
+
+        /* Ocultar la plataforma inicialmente */
+        #protected-platform-content {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <!-- PANTALLA 1: INICIO DE SESIÓN -->
-    <div id="login-screen" class="card">
-        <h1>Bienvenido</h1>
-        <p>Inicia sesión para acceder al contenido exclusivo.</p>
-        
-        <div id="buttonDiv" class="google-btn-container">
-            <span style="color: #888; font-size: 13px;">Iniciando servicio de Google...</span>
+    <!-- PANTALLA DE LOGUEO (CAPA EXTERNA) -->
+    <div id="login-screen-overlay" class="login-overlay">
+        <div class="login-card">
+            <h1>Bienvenido</h1>
+            <p>Inicia sesión con tu cuenta de Google para acceder a la Plataforma de Práctica Fonética.</p>
+            
+            <div id="buttonDiv" class="google-btn-container">
+                <span style="color: #888; font-size: 13px;">Iniciando servicio de Google...</span>
+            </div>
         </div>
     </div>
 
-    <!-- PANTALLA 2: CONTENIDO PROTEGIDO -->
-    <div id="content-screen" class="card">
-        <img id="user-picture" class="profile-img" src="" alt="Foto de perfil">
-        <div id="user-name" class="user-name"></div>
-        <div id="user-email" class="user-email"></div>
-        
-        <div style="text-align: left; margin-bottom: 25px; font-size: 14px; color: #444;">
-            <h3 style="margin-bottom: 8px; color: #764ba2;">¡Acceso Concedido!</h3>
-            <p>Este contenido ahora es visible porque te has autenticado correctamente.</p>
-        </div>
+    <!-- CONTENIDO PROTEGIDO (TU PLATAFORMA ORIGINAL) -->
+    <div id="protected-platform-content">
+        <header>
+            <h1>Plataforma de Práctica Fonética</h1>
+        </header>
 
-        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <main class="container">
+            <!-- Barra de Identidad del Alumno (Inyectada dinámicamente al loguearse) -->
+            <div class="user-auth-bar">
+                <div class="user-profile-info">
+                    <img id="nav-user-picture" class="user-avatar" src="" alt="Avatar">
+                    <div class="user-details">
+                        <div id="nav-user-name" class="user-display-name">Alumno</div>
+                        <div id="nav-user-email" class="user-display-email">correo@ejemplo.com</div>
+                    </div>
+                </div>
+                <button class="btn-google-logout" onclick="logoutGoogle()">Cerrar Sesión</button>
+            </div>
+
+            <!-- Tarjeta de Instrucciones Generales -->
+            <section class="instructions-card">
+                <h2>Instrucciones del Ejercicio</h2>
+                <p id="text-instructions">Escucha el audio de cada fila y analiza la palabra. Llena las celdas numéricas con un solo dígito, selecciona los fonemas correspondientes en el menú desplegable y, de forma opcional, escribe la transcripción fonética. Pasa el cursor sobre el botón <strong>?</strong> de cada cabecera para ver la instrucción detallada.</p>
+                
+                <div class="audio-container">
+                    <button id="btn-audio-main" class="btn-primary">🔊 Audio de Instrucciones Generales</button>
+                    <audio id="audio-instruction-main" src="instrucciones.mp3"></audio>
+                </div>
+            </section>
+
+            <!-- Contenedor Dinámico del Ejercicio -->
+            <section class="exercise-container">
+                <div class="table-header">
+                    <h3>Enfoque Actual: <span id="fonema-focus">/ə/</span></h3>
+                    <span id="table-indicator" class="badge">Tabla 1 / 5</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Palabra <button class="btn-help" data-tooltip="Palabra">?</button></th>
+                                <th># de F <button class="btn-help" data-tooltip="¿Cuántos fonemas o sonidos forman la palabra?">?</button></th>
+                                <th># de FC <button class="btn-help" data-tooltip="¿Cuántos fonemas consonantes hay en la palabra?">?</button></th>
+                                <th># de FV <button class="btn-help" data-tooltip="¿Cuántos fonemas vocales hay en la palabra?">?</button></th>
+                                <th>Pos. del<br>Énfasis <button class="btn-help" data-tooltip="¿Cuál es el lugar del fonema vocal que lleva el énfasis en la palabra?">?</button></th>
+                                <th id="th-dinamico">Posición de ... <button class="btn-help" data-tooltip="¿Cuál es el lugar del fonema vocal que se practica?">?</button></th>
+                                <th class="col-futura">Fonemas <button class="btn-help" data-tooltip="¿Cuáles fonemas vocales identificas en la palabra?">?</button></th>
+                                <th class="col-futura">Transcrito IPA <button class="btn-help" data-tooltip="Escribe la palabra en fonemas IPA">?</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Las 6 filas se inyectan dinámicamente desde JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Navegación entre las 5 tablas -->
+                <div class="navigation-controls">
+                    <button id="btn-prev" class="btn-nav">⬅️ Anterior</button>
+                    <button id="btn-next" class="btn-nav">Siguiente ➡️</button>
+                </div>
+            </section>
+
+            <!-- Panel de Control del Maestro -->
+            <section class="teacher-panel">
+                <h3>Sección de Envío y Revisión</h3>
+                <p>Al finalizar las 5 tablas, guarda tu progreso localmente o descarga el reporte final para enviárselo a tu profesor.</p>
+                <div class="action-buttons">
+                    <button id="btn-save" class="btn-success">💾 Guardar Progreso</button>
+                    <button id="btn-export" class="btn-secondary">📥 Descargar Reporte (.TXT)</button>
+                </div>
+            </section>
+        </main>
     </div>
 
+    <!-- Tu lógica modular original -->
+    <script type="module" src="script.js"></script>
+
+    <!-- Lógica de Control de Autenticación de Google -->
     <script>
-        // Función dedicada a renderizar el botón una vez cargada la API
+        // Inicializa el botón forzado por JS al cargar la ventana
+        window.onload = function () {
+            setTimeout(iniciarBotonGoogle, 600);
+        };
+
         function iniciarBotonGoogle() {
             if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-                // Limpiamos el texto de carga inicial
                 document.getElementById("buttonDiv").innerHTML = "";
 
-                // Inicializar cliente
-                // Asegúrate de que quede exactamente configurado así en tu index.html:
-google.accounts.id.initialize({
-    client_id: "1038098835533-ljnlngi6p1smnlmk3ocla866af4brv6e.apps.googleusercontent.com",
-    callback: handleCredentialResponse, // Requerido para procesar los datos en el navegador
-    context: "signin",
-    ux_mode: "popup", // Mantener estrictamente en popup para páginas estáticas de GitHub
-    auto_select: false
-});
-
-                // Renderizar físicamente el botón real
+                google.accounts.id.initialize({
+                    // IMPORTANTE: Asegúrate de mantener aquí tu ID de cliente real configurado en la consola de Google
+                    client_id: "://googleusercontent.com",
+                    callback: handleCredentialResponse,
+                    context: "signin",
+                    ux_mode: "popup", 
+                    auto_select: false
+                });
                 google.accounts.id.renderButton(
                     document.getElementById("buttonDiv"),
                     { 
@@ -149,17 +252,12 @@ google.accounts.id.initialize({
             } else {
                 document.getElementById("buttonDiv").innerHTML = 
                 `<p style='color:#dc3545; font-size:12px; font-weight:600;'>
-                    Error: Ejecuta este archivo mediante un servidor local (http://localhost) para saltar la seguridad de Chrome OS.
+                    Error: La librería de Google no cargó. Revisa tu conexión.
                  </p>`;
             }
         }
 
-        // Forzamos el chequeo al cargar la ventana
-        window.onload = function() {
-            setTimeout(iniciarBotonGoogle, 600);
-        };
-
-        // Decodificador del token JWT de Google
+        // Decodificador seguro de tokens JWT
         function parseJwt(token) {
             var base64Url = token.split('.');
             var base64 = base64Url.replaceAll('-', '+').replaceAll('_', '/');
@@ -170,23 +268,27 @@ google.accounts.id.initialize({
             return JSON.parse(jsonPayload);
         }
 
+        // Se ejecuta tras elegir la cuenta de Google con éxito
         function handleCredentialResponse(response) {
             try {
                 const responsePayload = parseJwt(response.credential);
 
-                document.getElementById('user-name').textContent = responsePayload.name;
-                document.getElementById('user-email').textContent = responsePayload.email;
-                document.getElementById('user-picture').src = responsePayload.picture;
+                // Insertar datos reales recibidos de Google en la barra superior de la app
+                document.getElementById('nav-user-name').textContent = responsePayload.name;
+                document.getElementById('nav-user-email').textContent = responsePayload.email;
+                document.getElementById('nav-user-picture').src = responsePayload.picture;
 
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('content-screen').style.display = 'block';
+                // Transición visual: Ocultar login y revelar plataforma de fonética
+                document.getElementById('login-screen-overlay').style.display = 'none';
+                document.getElementById('protected-platform-content').style.display = 'block';
             } catch (error) {
-                console.error("Error en autenticación:", error);
-                alert("Ocurrió un problema leyendo tu cuenta de Google.");
+                console.error("Error al procesar los datos de acceso:", error);
+                alert("Hubo un problema al procesar tu cuenta de Google.");
             }
         }
 
-        function logout() {
+        // Función para cerrar sesión de manera segura
+        function logoutGoogle() {
             if (window.google && google.accounts && google.accounts.id) {
                 google.accounts.id.disableAutoSelect();
             }

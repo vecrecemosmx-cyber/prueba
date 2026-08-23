@@ -125,13 +125,14 @@
                 document.getElementById("buttonDiv").innerHTML = "";
 
                 // Inicializar cliente
-                google.accounts.id.initialize({
-                    client_id: "1038098835533-ljnlngi6p1smnlmk3ocla866af4brv6e.apps.googleusercontent.com",
-                    callback: handleCredentialResponse,
-                    context: "signin",
-                    ux_mode: "popup",
-                    auto_select: false
-                });
+                // Asegúrate de que quede exactamente configurado así en tu index.html:
+google.accounts.id.initialize({
+    client_id: "1038098835533-ljnlngi6p1smnlmk3ocla866af4brv6e.apps.googleusercontent.com",
+    callback: handleCredentialResponse, // Requerido para procesar los datos en el navegador
+    context: "signin",
+    ux_mode: "popup", // Mantener estrictamente en popup para páginas estáticas de GitHub
+    auto_select: false
+});
 
                 // Renderizar físicamente el botón real
                 google.accounts.id.renderButton(
